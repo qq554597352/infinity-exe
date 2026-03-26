@@ -119,9 +119,24 @@ func take_damage(amount: int) -> void:
 
 func die() -> void:
 	print("玩家死亡！")
-	GameManager.reset_token()
-	# 降级技能
-	SkillManager.degrade_all_skills()
+	GameManager.player_died()
+
+	# 记录位置用于复活
+	var spawn_pos: Vector2 = Vector2(100, 200)
+
+	# 短暂显示死亡效果后复活
+	await get_tree().create_timer(1.0).timeout
+
+	# 重置玩家状态
+	current_health = max_health
+	invincible = true
+	global_position = spawn_pos
+
+	await get_tree().create_timer(2.0).timeout
+	invincible = false
+
+	# 通知UI更新
+	GameManager.game_reset.emit()
 
 func heal(amount: int) -> void:
 	current_health = min(current_health + amount, max_health)
