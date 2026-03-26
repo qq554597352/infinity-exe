@@ -28,4 +28,8 @@ func _on_body_entered(body: Node) -> void:
 			if "name" in fragment_data:
 				skill_name = fragment_data["name"]
 			print("拾取技能碎片: ", skill_name)
+
+			# 通知 SkillManager 添加到拥有列表
+			SkillManager.owned_skills.append(fragment_data)
+
 		queue_free()
