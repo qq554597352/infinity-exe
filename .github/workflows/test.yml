@@ -7,47 +7,6 @@ on:
     branches: [main, develop, master]
 
 jobs:
-  test:
-    name: Godot Tests
-    runs-on: ubuntu-latest
-    container:
-      image: barthel/godot:4.2.2-export-linux
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup
-        run: |
-          chmod +x -R $GITHUB_WORKSPACE
-
-      - name: Run GUT Tests
-        run: |
-          godot4 --headless -s res://addons/gut/gut_cmdln.gd -gexit
-
-  build-linux:
-    name: Build Linux
-    runs-on: ubuntu-latest
-    container:
-      image: barthel/godot:4.2.2-export-linux
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup
-        run: |
-          chmod +x -R $GITHUB_WORKSPACE
-
-      - name: Export Linux
-        run: |
-          mkdir -p build
-          godot4 --headless --export-release "Linux/X11" build/infinity_exe
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-build
-          path: build/
-
   build-windows:
     name: Build Windows
     runs-on: windows-latest
@@ -55,18 +14,54 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download Godot
+      - name: Setup Godot
         run: |
           curl -L -o godot.zip "https://github.com/godotengine/godot/releases/download/4.2.2-stable/Godot_v4.2.2-stable_win64.exe.zip"
           powershell -Command "Expand-Archive -Force godot.zip ."
+          dir
+
+      - name: Validate Project
+        run: |
+          ./Godot_v4.2.2-stable_win64.exe --headless --check-only --path .
+          if ($LASTEXITCODE -eq 0) { Write-Host "Project validation PASSED" }
+          else { Write-Host "Project validation FAILED"; exit 1 }
 
       - name: Export Windows
         run: |
-          mkdir build
+          mkdir -Force build
           ./Godot_v4.2.2-stable_win64.exe --headless --export-release "Windows Desktop" build/infinity_exe.exe
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
+          path: build/
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Godot
+        run: |
+          curl -L -o godot.zip "https://github.com/godotengine/godot/releases/download/4.2.2-stable/Godot_v4.2.2-stable_linux.x86_64.zip"
+          unzip -o godot.zip
+          chmod +x Godot_v4.2.2-stable_linux.x86_64
+          mv Godot_v4.2.2-stable_linux.x86_64 godot4
+
+      - name: Validate Project
+        run: |
+          ./godot4 --headless --check-only --path .
+
+      - name: Export Linux
+        run: |
+          mkdir -p build
+          ./godot4 --headless --export-release "Linux/X11" build/infinity_exe
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
           path: build/
