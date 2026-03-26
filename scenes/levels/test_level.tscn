@@ -1,0 +1,67 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/patrol.tscn" id="2"]
+[ext_resource type="Script" path="res://scripts/autoload/grapple_point.gd" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/token_ui.tscn" id="4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(800, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(32, 200)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_grapple"]
+radius = 30.0
+
+[node name="TestLevel" type="Node2D"]
+
+[node name="Player" parent="." instance=ExtResource("1")]
+position = Vector2(100, 200)
+
+[node name="FloorBody" type="StaticBody2D" parent="."]
+position = Vector2(0, 316)
+
+[node name="FloorColor" type="ColorRect" parent="FloorBody"]
+offset_left = -400.0
+offset_top = -16.0
+offset_right = 400.0
+offset_bottom = 16.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="FloorShape" type="CollisionShape2D" parent="FloorBody"]
+position = Vector2(0, 0)
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="WallBody" type="StaticBody2D" parent="."]
+position = Vector2(616, 216)
+
+[node name="WallColor" type="ColorRect" parent="WallBody"]
+offset_left = -16.0
+offset_top = -100.0
+offset_right = 16.0
+offset_bottom = 100.0
+color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="WallShape" type="CollisionShape2D" parent="WallBody"]
+position = Vector2(0, 0)
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="GrapplePoint1" type="Area2D" parent="."]
+position = Vector2(300, 50)
+script = ExtResource("3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GrapplePoint1"]
+shape = SubResource("CircleShape2D_grapple")
+
+[node name="Marker" type="ColorRect" parent="GrapplePoint1"]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(1, 1, 0, 1)
+
+[node name="Enemy1" parent="." instance=ExtResource("2")]
+position = Vector2(300, 268)
+
+[node name="TokenUI" parent="." instance=ExtResource("4")]

@@ -1,0 +1,25 @@
+# Godot specific
+.godot/
+*.import
+*.translation
+
+# Build exports
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.bak
