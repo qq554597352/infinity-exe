@@ -7,6 +7,9 @@ class_name Patrol
 @export var damage: int = 1           # 伤害
 @export var token_drop: int = 5       # 击杀奖励Token
 
+# 掉落参数
+@export var skill_drop_chance: float = 0.3  # 30%几率掉落技能碎片
+
 # 巡逻参数
 @export var patrol_distance: float = 100.0  # 巡逻距离
 var start_position: Vector2 = Vector2.ZERO
@@ -69,4 +72,17 @@ func die() -> void:
 	print("敌人死亡！获得 ", token_drop, " Token")
 	if GameManager:
 		GameManager.add_token(token_drop)
+
+	# 30%几率掉落技能碎片
+	if randf() < skill_drop_chance:
+		_spawn_skill_fragment()
+
 	queue_free()
+
+func _spawn_skill_fragment() -> void:
+	# 创建技能碎片
+	var fragment = load("res://scenes/items/skill_fragment.tscn").instantiate()
+	fragment.position = global_position
+	fragment.position.y -= 20  # 在敌人上方生成
+	get_parent().add_child(fragment)
+	print("掉落技能碎片！")
