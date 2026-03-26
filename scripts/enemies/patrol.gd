@@ -14,7 +14,6 @@ var move_direction: int = 1               # 移动方向（1=右，-1=左）
 
 var current_health: int
 var is_dead: bool = false
-var is_hurt: bool = false                 # 受伤状态
 
 @onready var health_bar: ProgressBar = $HealthBar
 @onready var sprite: ColorRect = $ColorRect
@@ -24,6 +23,9 @@ func _ready() -> void:
 	start_position = global_position
 	health_bar.max_value = max_health
 	health_bar.value = current_health
+
+	# 加入敌人组
+	add_to_group("enemies")
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
@@ -38,11 +40,10 @@ func _physics_process(delta: float) -> void:
 	if abs(distance_from_start) >= patrol_distance:
 		move_direction *= -1  # 反向
 
-	# 检测与玩家的碰撞
-	for i in range(get_slide_collision_count()):
-		var collision = get_slide_collision(i)
-		if collision.get_collider() is PlayerController:
-			collision.get_collider().take_damage(damage)
+func hit_player(player: PlayerController) -> void:
+	if is_dead:
+		return
+	player.take_damage(damage)
 
 func take_damage(amount: int) -> void:
 	if is_dead:
@@ -52,27 +53,20 @@ func take_damage(amount: int) -> void:
 	health_bar.value = current_health
 	print("敌人受伤！剩余生命: ", current_health)
 
-	# 受伤效果 - 闪烁
+	# 受伤效果
 	_hurt_effect()
 
 	if current_health <= 0:
 		die()
 
 func _hurt_effect() -> void:
-	is_hurt = true
-	# 改变颜色为白色表示受伤
 	sprite.color = Color(1, 1, 1, 1)
-
-	# 等待后恢复
 	await get_tree().create_timer(0.1).timeout
 	sprite.color = Color(1, 0.2, 0.2, 1)
-	is_hurt = false
 
 func die() -> void:
 	is_dead = true
 	print("敌人死亡！获得 ", token_drop, " Token")
-	# 通知GameManager增加Token
 	if GameManager:
 		GameManager.add_token(token_drop)
-	# 移除敌人
 	queue_free()

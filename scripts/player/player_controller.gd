@@ -28,18 +28,16 @@ var is_grappling: bool = false                # 是否正在钩爪
 # 攻击参数
 @export var attack_cooldown: float = 0.3       # 攻击冷却时间
 @export var attack_damage: int = 1             # 攻击伤害
+@export var attack_range: float = 80.0         # 攻击范围
 var can_attack: bool = true                    # 能否攻击
 var is_attacking: bool = false                 # 是否正在攻击
 var facing_direction: int = 1                  # 面向方向（1=右，-1=左）
 
 # 攻击特效
-@onready var attack_hitbox: Area2D = $AttackHitbox
 @onready var attack_effect: ColorRect = $AttackEffect
 
 func _ready() -> void:
 	current_health = max_health
-	# 禁用攻击判定区域的碰撞（用于攻击）
-	attack_hitbox.monitoring = false
 	# 攻击特效默认隐藏
 	attack_effect.visible = false
 
@@ -100,6 +98,18 @@ func _physics_process(delta: float) -> void:
 	# 8. 应用移动
 	move_and_slide()
 
+	# 9. 检测与敌人的碰撞
+	_check_enemy_collision()
+
+func _check_enemy_collision() -> void:
+	# 获取场景中所有敌人
+	var enemies = get_tree().get_nodes_in_group("enemies")
+	for enemy in enemies:
+		var distance := global_position.distance_to(enemy.global_position)
+		if distance < 30:  # 碰撞距离
+			if not invincible:
+				enemy.hit_player(self)
+
 func take_damage(amount: int) -> void:
 	if invincible or current_health <= 0:
 		return
@@ -117,9 +127,7 @@ func take_damage(amount: int) -> void:
 
 func die() -> void:
 	print("玩家死亡！")
-	# 重置Token和技能
 	GameManager.reset_token()
-	# 后续可以添加死亡界面
 
 func heal(amount: int) -> void:
 	current_health = min(current_health + amount, max_health)
@@ -131,18 +139,11 @@ func _attack() -> void:
 	# 显示攻击特效
 	_show_attack_effect()
 
-	# 启用攻击判定
-	attack_hitbox.monitoring = true
-
-	# 等待一帧让碰撞检测生效
-	await get_tree().process_frame
-
-	# 尝试对区域内的敌人造成伤害
+	# 使用射线检测敌人
 	_attempt_damage()
 
-	# 短暂等待后关闭
-	await get_tree().create_timer(0.05).timeout
-	attack_hitbox.monitoring = false
+	# 等待攻击动画
+	await get_tree().create_timer(0.2).timeout
 	can_attack = true
 	is_attacking = false
 
@@ -152,22 +153,36 @@ func _show_attack_effect() -> void:
 	attack_effect.visible = true
 
 	# 等待一小段时间后隐藏
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(0.15).timeout
 	attack_effect.visible = false
 
 func _attempt_damage() -> void:
-	var bodies = attack_hitbox.get_overlapping_bodies()
-	print("攻击范围内有: ", bodies.size(), " 个物体")
-	for body in bodies:
-		print("攻击到: ", body.name)
-		if body.has_method("take_damage"):
-			body.take_damage(attack_damage)
-			print("造成伤害: ", attack_damage)
+	# 攻击方向
+	var attack_pos := global_position + Vector2(attack_range / 2 * facing_direction, 0)
+
+	# 获取场景中所有敌人
+	var enemies = get_tree().get_nodes_in_group("enemies")
+	print("检测到敌人数量: ", enemies.size())
+
+	for enemy in enemies:
+		var distance := global_position.distance_to(enemy.global_position)
+		print("敌人距离: ", distance, " 攻击范围: ", attack_range)
+
+		# 检查是否在攻击范围内
+		if distance < attack_range:
+			# 检查敌人是否在攻击方向上
+			var to_enemy := enemy.global_position - global_position
+			var dot_product := to_enemy.normalized().dot(Vector2.RIGHT * facing_direction)
+
+			print("攻击方向点积: ", dot_product)
+
+			if dot_product > 0.3:  # 敌人在攻击方向上
+				print("攻击到敌人: ", enemy.name)
+				if enemy.has_method("take_damage"):
+					enemy.take_damage(attack_damage)
 
 func _try_start_grapple() -> void:
-	# 查找范围内的钩爪点
 	var grapple_points = get_tree().get_nodes_in_group("grapple_points")
-
 	if grapple_points.is_empty():
 		return
 
@@ -186,14 +201,10 @@ func _try_start_grapple() -> void:
 		velocity = Vector2.ZERO
 
 func _grapple_update(delta: float) -> void:
-	# 指向目标点的方向
 	var direction := (grapple_target - global_position).normalized()
-
-	# 拉向目标点
 	velocity = direction * grapple_speed
 	move_and_slide()
 
-	# 到达目标点或碰到障碍物时停止
 	var distance_to_target := global_position.distance_to(grapple_target)
 	if distance_to_target < 30 or is_on_wall() or is_on_floor():
 		is_grappling = false
