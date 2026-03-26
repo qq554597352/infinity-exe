@@ -2,12 +2,11 @@
 
 [ext_resource type="Script" path="res://scripts/autoload/skill_fragment.gd" id="1"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 15.0
+
 [node name="SkillFragment" type="Area2D"]
 script = ExtResource("1")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1")
@@ -15,6 +14,3 @@ shape = SubResource("CircleShape2D_1")
 [node name="Polygon2D" type="Polygon2D" parent="."]
 color = Color(0, 1, 1, 1)
 polygon = PackedVector2Array(0, -15, 13, 0, 0, 15, -13, 0)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 15.0
