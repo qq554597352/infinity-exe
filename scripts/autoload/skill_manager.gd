@@ -122,5 +122,6 @@ func repair_skill(slot: int) -> bool:
 func get_skill_value(skill_id: String, value_name: String) -> float:
 	for skill: Skill in skill_pool:
 		if skill.skill_id == skill_id:
-			return skill.get(value_name, 1.0)
+			if value_name in skill:
+				return skill.get(value_name)
 	return 1.0
