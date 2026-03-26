@@ -171,8 +171,8 @@ func _attempt_damage() -> void:
 		# 检查是否在攻击范围内
 		if distance < attack_range:
 			# 检查敌人是否在攻击方向上
-			var to_enemy := enemy.global_position - global_position
-			var dot_product := to_enemy.normalized().dot(Vector2.RIGHT * facing_direction)
+			var to_enemy: Vector2 = enemy.global_position - global_position
+			var dot_product: float = to_enemy.normalized().dot(Vector2.RIGHT * facing_direction)
 
 			print("攻击方向点积: ", dot_product)
 
