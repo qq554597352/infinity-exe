@@ -134,20 +134,21 @@ func _attack() -> void:
 	# 启用攻击判定
 	attack_hitbox.monitoring = true
 
+	# 等待一帧让碰撞检测生效
+	await get_tree().process_frame
+
 	# 尝试对区域内的敌人造成伤害
 	_attempt_damage()
 
-	# 重置攻击冷却
-	await get_tree().create_timer(0.1).timeout
+	# 短暂等待后关闭
+	await get_tree().create_timer(0.05).timeout
+	attack_hitbox.monitoring = false
 	can_attack = true
 	is_attacking = false
 
-	# 关闭攻击判定
-	attack_hitbox.monitoring = false
-
 func _show_attack_effect() -> void:
 	# 根据朝向翻转特效位置
-	attack_effect.position.x = 32 if facing_direction > 0 else -64
+	attack_effect.position.x = 32 if facing_direction > 0 else -80
 	attack_effect.visible = true
 
 	# 等待一小段时间后隐藏
