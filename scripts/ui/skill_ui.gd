@@ -15,7 +15,8 @@ func _create_skill_slots() -> void:
 		var slot: Panel = Panel.new()
 		slot.name = "SkillSlot" + str(i)
 
-		var viewport_size: Vector2 = get_viewport_rect().size
+		# 获取视口大小
+		var viewport_size: Vector2 = get_viewport().get_visible_rect().size
 		var x_pos: float = (viewport_size.x - (slot_size * 4 + slot_spacing * 3)) / 2
 		slot.position = Vector2(x_pos + i * (slot_size + slot_spacing), viewport_size.y - slot_size - 20)
 		slot.size = Vector2(slot_size, slot_size)
