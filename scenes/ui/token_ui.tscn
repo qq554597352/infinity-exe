@@ -1,6 +1,9 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/ui/token_ui.gd" id="1"]
+
 [node name="TokenUI" type="CanvasLayer"]
+script = ExtResource("1")
 
 [node name="TokenLabel" type="Label" parent="."]
 anchors_preset = 1
