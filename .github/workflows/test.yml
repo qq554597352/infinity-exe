@@ -2,20 +2,16 @@ name: Godot Test
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, master]
   pull_request:
-    branches: [main, develop]
-
-env:
-  GODOT_VERSION: "4.2.2"
-  GODOT_VERSION_SHORT: "4.2"
+    branches: [main, develop, master]
 
 jobs:
   test:
     name: Godot Tests
     runs-on: ubuntu-latest
     container:
-      image: barthel/godot:${{ env.GODOT_VERSION }}-export-linux
+      image: barthel/godot:4.2.2-export-linux
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,13 +22,13 @@ jobs:
 
       - name: Run GUT Tests
         run: |
-          godot${{ env.GODOT_VERSION_SHORT }} --headless -s res://addons/gut/gut_cmdln.gd -gexit
+          godot4 --headless -s res://addons/gut/gut_cmdln.gd -gexit
 
-  build:
-    name: Build Export
+  build-linux:
+    name: Build Linux
     runs-on: ubuntu-latest
     container:
-      image: barthel/godot:${{ env.GODOT_VERSION }}-export-linux
+      image: barthel/godot:4.2.2-export-linux
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,7 +40,7 @@ jobs:
       - name: Export Linux
         run: |
           mkdir -p build
-          godot${{ env.GODOT_VERSION_SHORT }} --headless --export-release "Linux/X11" build/infinity_exe
+          godot4 --headless --export-release "Linux/X11" build/infinity_exe
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -52,7 +48,7 @@ jobs:
           name: linux-build
           path: build/
 
-  windows-build:
+  build-windows:
     name: Build Windows
     runs-on: windows-latest
     steps:
@@ -61,13 +57,13 @@ jobs:
 
       - name: Download Godot
         run: |
-          curl -L -o godot.zip "https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe.zip"
+          curl -L -o godot.zip "https://github.com/godotengine/godot/releases/download/4.2.2-stable/Godot_v4.2.2-stable_win64.exe.zip"
           powershell -Command "Expand-Archive -Force godot.zip ."
 
       - name: Export Windows
         run: |
           mkdir build
-          ./Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe --headless --export-release "Windows Desktop" build/infinity_exe.exe
+          ./Godot_v4.2.2-stable_win64.exe --headless --export-release "Windows Desktop" build/infinity_exe.exe
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
