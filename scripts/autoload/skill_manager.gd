@@ -2,8 +2,8 @@ extends Node
 
 # 技能管理器
 
-var skill_pool: Array[Resource] = []
-var owned_skills: Array[Dictionary] = []
+var skill_pool: Array = []
+var owned_skills: Array = []
 var equipped_skills: Array = [null, null, null, null]
 var max_owned: int = 10
 var max_equipped: int = 4
@@ -28,7 +28,7 @@ func generate_skill_fragment() -> Dictionary:
 		return {}
 
 	var random_index: int = randi() % skill_pool.size()
-	var skill: Skill = skill_pool[random_index]
+	var skill = skill_pool[random_index]
 	var fragment: Dictionary = {
 		"id": skill.skill_id,
 		"name": skill.skill_name,
@@ -61,8 +61,8 @@ func unequip_skill(slot: int) -> Dictionary:
 	if slot < 0 or slot >= max_equipped:
 		return {}
 
-	var skill_data: Dictionary = equipped_skills[slot]
-	if skill_data.is_empty():
+	var skill_data = equipped_skills[slot]
+	if skill_data == null or typeof(skill_data) != TYPE_DICTIONARY:
 		return {}
 
 	if owned_skills.size() < max_owned:
@@ -75,13 +75,13 @@ func use_skill(slot: int) -> bool:
 	if slot < 0 or slot >= max_equipped:
 		return false
 
-	var skill_data: Dictionary = equipped_skills[slot]
-	if skill_data.is_empty():
+	var skill_data = equipped_skills[slot]
+	if skill_data == null or typeof(skill_data) != TYPE_DICTIONARY:
 		return false
 
 	var skill_id: String = ""
 	if "id" in skill_data:
-		skill_id = skill_data["id"]
+		skill_id = str(skill_data["id"])
 	skill_used.emit(skill_id)
 	return true
 
@@ -90,19 +90,19 @@ func get_equipped_skills() -> Array:
 
 func degrade_all_skills() -> void:
 	for i in range(equipped_skills.size()):
-		var skill: Dictionary = equipped_skills[i]
-		if not skill.is_empty():
+		var skill = equipped_skills[i]
+		if skill != null and typeof(skill) == TYPE_DICTIONARY:
 			var deg: int = 0
 			if "degradation" in skill:
-				deg = skill["degradation"]
+				deg = int(skill["degradation"])
 			equipped_skills[i]["degradation"] = deg + 1
 
 func repair_skill(slot: int) -> bool:
 	if slot < 0 or slot >= max_equipped:
 		return false
 
-	var skill: Dictionary = equipped_skills[slot]
-	if not skill.is_empty():
+	var skill = equipped_skills[slot]
+	if skill != null and typeof(skill) == TYPE_DICTIONARY:
 		equipped_skills[slot]["degradation"] = 0
 		return true
 	return false

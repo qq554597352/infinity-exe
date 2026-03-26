@@ -15,7 +15,6 @@ func _create_skill_slots() -> void:
 		var slot: Panel = Panel.new()
 		slot.name = "SkillSlot" + str(i)
 
-		# 获取视口大小
 		var viewport_size: Vector2 = get_viewport().get_visible_rect().size
 		var x_pos: float = (viewport_size.x - (slot_size * 4 + slot_spacing * 3)) / 2
 		slot.position = Vector2(x_pos + i * (slot_size + slot_spacing), viewport_size.y - slot_size - 20)
@@ -56,14 +55,17 @@ func _update_display() -> void:
 		var name_label: Label = slot.get_node_or_null("NameLabel")
 
 		if name_label != null:
-			var skill_data: Dictionary = equipped[i] if i < equipped.size() else {}
-			if not skill_data.is_empty():
-				var skill_name: String = skill_data.get("name", "?")
+			var skill_data = equipped[i] if i < equipped.size() else null
+
+			if skill_data != null and typeof(skill_data) == TYPE_DICTIONARY:
+				var skill_name: String = ""
+				if "name" in skill_data:
+					skill_name = str(skill_data["name"])
 				name_label.text = skill_name.substr(0, min(skill_name.length(), 10))
 
 				var deg: int = 0
 				if "degradation" in skill_data:
-					deg = skill_data["degradation"]
+					deg = int(skill_data["degradation"])
 
 				match deg:
 					0: name_label.add_theme_color_override("font_color", Color(0, 1, 1))
@@ -79,13 +81,13 @@ func _use_skill(slot_index: int) -> void:
 	if slot_index >= equipped.size():
 		return
 
-	var skill_data: Dictionary = equipped[slot_index]
-	if skill_data.is_empty():
+	var skill_data = equipped[slot_index]
+	if skill_data == null or typeof(skill_data) != TYPE_DICTIONARY:
 		return
 
 	var deg: int = 0
 	if "degradation" in skill_data:
-		deg = skill_data["degradation"]
+		deg = int(skill_data["degradation"])
 
 	if deg >= 3:
 		print("技能已损坏，无法使用！")
@@ -93,7 +95,7 @@ func _use_skill(slot_index: int) -> void:
 
 	var skill_id: String = ""
 	if "id" in skill_data:
-		skill_id = skill_data["id"]
+		skill_id = str(skill_data["id"])
 
 	print("使用技能: ", skill_id)
 
