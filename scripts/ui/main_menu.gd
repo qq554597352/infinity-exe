@@ -40,7 +40,7 @@ func _create_main_menu() -> void:
 	var bg = ColorRect.new()
 	bg.name = "Background"
 	bg.color = Color(0.05, 0.05, 0.1, 0.95)
-	bg.size = get_viewport_rect().size
+	bg.size = get_viewport().get_visible_rect().size
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 
