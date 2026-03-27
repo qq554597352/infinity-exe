@@ -55,7 +55,7 @@ anchor_bottom = 1.0
 offset_left = -600.0
 offset_top = -50.0
 offset_right = 600.0
-offset_bottom = 650.0
+offset_bottom = 850.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.08, 0.08, 0.12, 1)
@@ -68,7 +68,7 @@ position = Vector2(100, 550)
 
 # 地面1 - 左侧起始区
 [node name="Floor1" type="StaticBody2D" parent="."]
-position = Vector2(0, 580)
+position = Vector2(0, 610)
 collision_layer = 1
 collision_mask = 0
 
@@ -84,7 +84,7 @@ shape = SubResource("RectangleShape2D_floor_1")
 
 # 地面2 - 右侧区
 [node name="Floor2" type="StaticBody2D" parent="."]
-position = Vector2(600, 580)
+position = Vector2(600, 610)
 collision_layer = 1
 collision_mask = 0
 
