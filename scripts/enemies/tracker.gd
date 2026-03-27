@@ -188,6 +188,9 @@ func die() -> void:
 	is_dead = true
 	print("Tracker 被消灭！获得 ", token_drop, " Token")
 
+	# 播放死亡特效
+	_spawn_death_effect()
+
 	if GameManager:
 		GameManager.add_token(token_drop)
 
@@ -200,6 +203,11 @@ func die() -> void:
 
 	await get_tree().create_timer(0.5).timeout
 	queue_free()
+
+func _spawn_death_effect() -> void:
+	var effects = get_node_or_null("/root/EffectsManager")
+	if effects and effects.has_method("spawn_enemy_death_effect"):
+		effects.spawn_enemy_death_effect(global_position, Color(0.2, 0.4, 1))
 
 func _death_effect() -> void:
 	# 消失效果

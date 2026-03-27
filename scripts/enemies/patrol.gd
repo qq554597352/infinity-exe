@@ -70,6 +70,10 @@ func _hurt_effect() -> void:
 func die() -> void:
 	is_dead = true
 	print("敌人死亡！获得 ", token_drop, " Token")
+
+	# 播放死亡特效
+	_spawn_death_effect()
+
 	if GameManager:
 		GameManager.add_token(token_drop)
 
@@ -78,6 +82,11 @@ func die() -> void:
 		_spawn_skill_fragment()
 
 	queue_free()
+
+func _spawn_death_effect() -> void:
+	var effects = get_node_or_null("/root/EffectsManager")
+	if effects and effects.has_method("spawn_enemy_death_effect"):
+		effects.spawn_enemy_death_effect(global_position)
 
 func _spawn_skill_fragment() -> void:
 	# 创建技能碎片

@@ -53,6 +53,12 @@ func _play_sound(sound_name: String) -> void:
 	if audio_manager and audio_manager.has_method("play_sfx"):
 		audio_manager.play_sfx(sound_name)
 
+func _spawn_effect(effect_name: String, position: Vector2) -> void:
+	# 懒加载 EffectsManager
+	var effects = get_node_or_null("/root/EffectsManager")
+	if effects and effects.has_method("spawn_" + effect_name + "_effect"):
+		effects.call("spawn_" + effect_name + "_effect", position)
+
 func _physics_process(delta: float) -> void:
 	if is_grappling:
 		_grapple_update(delta)
@@ -146,6 +152,9 @@ func die() -> void:
 	invincible = true
 	global_position = spawn_pos
 
+	# 播放复活特效
+	_spawn_effect("respawn", global_position)
+
 	await get_tree().create_timer(2.0).timeout
 	invincible = false
 
@@ -165,6 +174,9 @@ func _attack() -> void:
 
 	# 播放攻击音效
 	_play_sound("attack")
+
+	# 播放攻击粒子特效
+	_spawn_effect("attack", global_position + Vector2(40 * facing_direction, 0))
 
 	await get_tree().create_timer(0.2).timeout
 	can_attack = true
@@ -228,6 +240,7 @@ func dash_strike() -> void:
 	invincible = true
 
 	_play_sound("skill")
+	_spawn_effect("dash_trail", global_position)
 
 	var dash_dir := Vector2.RIGHT * facing_direction
 	velocity = dash_dir * 800
@@ -244,6 +257,7 @@ func _dash_update(delta: float) -> void:
 # 弹幕格挡
 func bullet_bloom() -> void:
 	_play_sound("skill")
+	_spawn_effect("bullet_bloom", global_position)
 
 	# 创建格挡特效
 	var enemies = get_tree().get_nodes_in_group("enemies")
@@ -256,6 +270,7 @@ func bullet_bloom() -> void:
 # 紧急闪避
 func evasion_protocol() -> void:
 	_play_sound("skill")
+	_spawn_effect("evasion", global_position)
 
 	invincible = true
 	var blink_dir := Vector2.RIGHT * facing_direction

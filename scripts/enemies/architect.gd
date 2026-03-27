@@ -253,6 +253,7 @@ func _enter_phase_2() -> void:
 
 	# 第二阶段特效
 	_modulate_phase_effect()
+	_spawn_phase_change_effect()
 
 	# 增加移动速度
 	chase_speed *= 1.3
@@ -267,6 +268,7 @@ func _enter_phase_3() -> void:
 
 	# 第三阶段特效
 	_modulate_phase_effect()
+	_spawn_phase_change_effect()
 
 	# 进一步增强
 	chase_speed *= 1.5
@@ -277,6 +279,11 @@ func _enter_phase_3() -> void:
 
 	await get_tree().create_timer(2.0).timeout
 	current_state = State.CHASE
+
+func _spawn_phase_change_effect() -> void:
+	var effects = get_node_or_null("/root/EffectsManager")
+	if effects and effects.has_method("spawn_boss_phase_change_effect"):
+		effects.spawn_boss_phase_change_effect(global_position, current_phase)
 
 func _modulate_phase_effect() -> void:
 	# 阶段变化时的视觉效果
@@ -361,6 +368,9 @@ func die() -> void:
 	print("========== ARCHITECT 已击败！ ==========")
 	print("获得 ", token_drop, " Token！")
 
+	# 播放 Boss 死亡特效
+	_spawn_death_effect()
+
 	if GameManager:
 		GameManager.add_token(token_drop)
 		# Boss 击杀可能掉落多个技能碎片
@@ -373,6 +383,11 @@ func die() -> void:
 
 	await get_tree().create_timer(2.0).timeout
 	queue_free()
+
+func _spawn_death_effect() -> void:
+	var effects = get_node_or_null("/root/EffectsManager")
+	if effects and effects.has_method("spawn_boss_death_effect"):
+		effects.spawn_boss_death_effect(global_position)
 
 func _death_animation() -> void:
 	var tween := create_tween()
