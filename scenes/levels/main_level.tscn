@@ -1,0 +1,373 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/patrol.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/tracker.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/architect.tscn" id="4"]
+[ext_resource type="Script" path="res://scripts/autoload/grapple_point.gd" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/skill_inventory.tscn" id="7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor_1"]
+size = Vector2(400, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor_2"]
+size = Vector2(400, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor_3"]
+size = Vector2(300, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor_4"]
+size = Vector2(200, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_left"]
+size = Vector2(32, 400)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_right"]
+size = Vector2(32, 400)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform_1"]
+size = Vector2(150, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform_2"]
+size = Vector2(120, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform_3"]
+size = Vector2(100, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cave"]
+size = Vector2(200, 100)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_grapple"]
+radius = 30.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_boss_platform"]
+size = Vector2(250, 40)
+
+[node name="MainLevel" type="Node2D"]
+
+# ============ 玩家 ============
+[node name="Player" parent="." instance=ExtResource("1")]
+position = Vector2(100, 550)
+
+# ============ 地面 ============
+
+# 地面1 - 左侧起始区
+[node name="Floor1" type="StaticBody2D" parent="."]
+position = Vector2(0, 580)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="Floor1"]
+offset_left = -200.0
+offset_top = -16.0
+offset_right = 200.0
+offset_bottom = 16.0
+color = Color(0.25, 0.25, 0.28, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="Floor1"]
+shape = SubResource("RectangleShape2D_floor_1")
+
+# 地面2 - 右侧区
+[node name="Floor2" type="StaticBody2D" parent="."]
+position = Vector2(600, 580)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="Floor2"]
+offset_left = -200.0
+offset_top = -16.0
+offset_right = 200.0
+offset_bottom = 16.0
+color = Color(0.25, 0.25, 0.28, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="Floor2"]
+shape = SubResource("RectangleShape2D_floor_2")
+
+# 地面3 - 中间区
+[node name="Floor3" type="StaticBody2D" parent="."]
+position = Vector2(350, 450)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="Floor3"]
+offset_left = -150.0
+offset_top = -16.0
+offset_right = 150.0
+offset_bottom = 16.0
+color = Color(0.3, 0.3, 0.33, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="Floor3"]
+shape = SubResource("RectangleShape2D_floor_3")
+
+# 地面4 - Boss区域
+[node name="Floor4" type="StaticBody2D" parent="."]
+position = Vector2(900, 400)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="Floor4"]
+offset_left = -100.0
+offset_top = -20.0
+offset_right = 100.0
+offset_bottom = 20.0
+color = Color(0.35, 0.15, 0.35, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="Floor4"]
+shape = SubResource("RectangleShape2D_floor_4")
+
+# Boss平台
+[node name="BossPlatform" type="StaticBody2D" parent="."]
+position = Vector2(1050, 500)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="BossPlatform"]
+offset_left = -125.0
+offset_top = -20.0
+offset_right = 125.0
+offset_bottom = 20.0
+color = Color(0.4, 0.1, 0.4, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="BossPlatform"]
+shape = SubResource("RectangleShape2D_boss_platform")
+
+# ============ 墙壁 ============
+
+# 左侧墙壁
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(-16, 300)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="WallLeft"]
+offset_left = -16.0
+offset_top = -200.0
+offset_right = 16.0
+offset_bottom = 200.0
+color = Color(0.35, 0.35, 0.38, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("RectangleShape2D_wall_left")
+
+# 右侧墙壁
+[node name="WallRight" type="StaticBody2D" parent="."]
+position = Vector2(1184, 300)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="WallRight"]
+offset_left = -16.0
+offset_top = -200.0
+offset_right = 16.0
+offset_bottom = 200.0
+color = Color(0.35, 0.35, 0.38, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("RectangleShape2D_wall_right")
+
+# ============ 悬浮平台 ============
+
+# 平台1 - 左侧中上方
+[node name="Platform1" type="StaticBody2D" parent="."]
+position = Vector2(150, 350)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="Platform1"]
+offset_left = -75.0
+offset_top = -10.0
+offset_right = 75.0
+offset_bottom = 10.0
+color = Color(0.4, 0.4, 0.45, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="Platform1"]
+shape = SubResource("RectangleShape2D_platform_1")
+
+# 平台2 - 中间
+[node name="Platform2" type="StaticBody2D" parent="."]
+position = Vector2(400, 250)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="Platform2"]
+offset_left = -60.0
+offset_top = -10.0
+offset_right = 60.0
+offset_bottom = 10.0
+color = Color(0.4, 0.4, 0.45, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="Platform2"]
+shape = SubResource("RectangleShape2D_platform_2")
+
+# 平台3 - 右侧
+[node name="Platform3" type="StaticBody2D" parent="."]
+position = Vector2(700, 300)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="Platform3"]
+offset_left = -50.0
+offset_top = -10.0
+offset_right = 50.0
+offset_bottom = 10.0
+color = Color(0.4, 0.4, 0.45, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="Platform3"]
+shape = SubResource("RectangleShape2D_platform_3")
+
+# ============ 洞穴/隐藏区域 ============
+
+[node name="Cave" type="StaticBody2D" parent="."]
+position = Vector2(850, 520)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Color" type="ColorRect" parent="Cave"]
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = 50.0
+color = Color(0.15, 0.15, 0.18, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="Cave"]
+shape = SubResource("RectangleShape2D_cave")
+
+# ============ 钩爪点 ============
+
+[node name="Grapple1" type="Area2D" parent="."]
+position = Vector2(300, 150)
+script = ExtResource("5")
+
+[node name="Collision" type="CollisionShape2D" parent="Grapple1"]
+shape = SubResource("CircleShape2D_grapple")
+
+[node name="Marker" type="ColorRect" parent="Grapple1"]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(1, 1, 0, 0.8)
+
+[node name="Grapple2" type="Area2D" parent="."]
+position = Vector2(500, 100)
+script = ExtResource("5")
+
+[node name="Collision" type="CollisionShape2D" parent="Grapple2"]
+shape = SubResource("CircleShape2D_grapple")
+
+[node name="Marker" type="ColorRect" parent="Grapple2"]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(1, 1, 0, 0.8)
+
+[node name="Grapple3" type="Area2D" parent="."]
+position = Vector2(750, 120)
+script = ExtResource("5")
+
+[node name="Collision" type="CollisionShape2D" parent="Grapple3"]
+shape = SubResource("CircleShape2D_grapple")
+
+[node name="Marker" type="ColorRect" parent="Grapple3"]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(1, 1, 0, 0.8)
+
+[node name="Grapple4" type="Area2D" parent="."]
+position = Vector2(950, 200)
+script = ExtResource("5")
+
+[node name="Collision" type="CollisionShape2D" parent="Grapple4"]
+shape = SubResource("CircleShape2D_grapple")
+
+[node name="Marker" type="ColorRect" parent="Grapple4"]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(1, 0.5, 0, 0.8)
+
+# ============ 敌人 - 巡逻型 ============
+
+[node name="Patrol1" parent="." instance=ExtResource("2")]
+position = Vector2(200, 532)
+
+[node name="Patrol2" parent="." instance=ExtResource("2")]
+position = Vector2(500, 532)
+
+[node name="Patrol3" parent="." instance=ExtResource("2")]
+position = Vector2(700, 532)
+
+# 悬浮平台上的敌人
+[node name="Patrol4" parent="." instance=ExtResource("2")]
+position = Vector2(400, 202)
+patrol_distance = 60.0
+
+# ============ 敌人 - 追踪型 ============
+
+[node name="Tracker1" parent="." instance=ExtResource("3")]
+position = Vector2(400, 532)
+detection_range = 300.0
+
+[node name="Tracker2" parent="." instance=ExtResource("3")]
+position = Vector2(750, 252)
+detection_range = 250.0
+
+# 洞穴区域敌人
+[node name="Tracker3" parent="." instance=ExtResource("3")]
+position = Vector2(850, 472)
+
+# ============ Boss ============
+
+[node name="Architect" parent="." instance=ExtResource("4")]
+position = Vector2(1050, 452)
+max_health = 25
+token_drop = 100
+
+# ============ UI ============
+
+[node name="HUD" parent="." instance=ExtResource("6")]
+
+[node name="SkillInventory" parent="." instance=ExtResource("7")]
+
+# ============ 装饰元素 ============
+
+[node name="Decor1" type="ColorRect" parent="."]
+offset_left = 20.0
+offset_top = 560.0
+offset_right = 30.0
+offset_bottom = 600.0
+color = Color(0.2, 0.2, 0.22, 1)
+
+[node name="Decor2" type="ColorRect" parent="."]
+offset_left = 600.0
+offset_top = 560.0
+offset_right = 610.0
+offset_bottom = 600.0
+color = Color(0.2, 0.2, 0.22, 1)
+
+# 背景装饰
+[node name="BgDecor1" type="ColorRect" parent="."]
+modulate = Color(0.15, 0.15, 0.18, 1)
+offset_left = 100.0
+offset_top = 200.0
+offset_right = 120.0
+offset_bottom = 400.0
+
+[node name="BgDecor2" type="ColorRect" parent="."]
+modulate = Color(0.15, 0.15, 0.18, 1)
+offset_left = 500.0
+offset_top = 150.0
+offset_right = 530.0
+offset_bottom = 350.0
+
+[node name="BgDecor3" type="ColorRect" parent="."]
+modulate = Color(0.12, 0.08, 0.15, 1)
+offset_left = 900.0
+offset_top = 100.0
+offset_right = 980.0
+offset_bottom = 300.0
