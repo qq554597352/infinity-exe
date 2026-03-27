@@ -178,7 +178,12 @@ func _show_settings_panel() -> void:
 	settings_panel.set_anchors_preset(Control.PRESET_CENTER)
 	settings_panel.position = Vector2(-200, -150)
 	settings_panel.size = Vector2(400, 300)
-	settings_panel.color = Color(0.1, 0.1, 0.15, 0.98)
+
+	# 添加背景
+	var bg = ColorRect.new()
+	bg.color = Color(0.1, 0.1, 0.15, 0.98)
+	bg.size = Vector2(400, 300)
+	settings_panel.add_child(bg)
 
 	var title = Label.new()
 	title.text = "SETTINGS"

@@ -46,6 +46,20 @@ size = Vector2(250, 40)
 
 [node name="MainLevel" type="Node2D"]
 
+# ============ 背景 ============
+[node name="Background" type="ColorRect" parent="."]
+z_index = -100
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -50.0
+offset_right = 600.0
+offset_bottom = 650.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.08, 0.12, 1)
+
 # ============ 玩家 ============
 [node name="Player" parent="." instance=ExtResource("1")]
 position = Vector2(100, 550)
