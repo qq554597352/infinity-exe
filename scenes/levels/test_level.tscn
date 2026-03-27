@@ -2,10 +2,11 @@
 
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/patrol.tscn" id="2"]
-[ext_resource type="Script" path="res://scripts/autoload/grapple_point.gd" id="3"]
-[ext_resource type="PackedScene" path="res://scenes/ui/token_ui.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/ui/skill_ui.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://scenes/ui/skill_inventory.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/tracker.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/architect.tscn" id="4"]
+[ext_resource type="Script" path="res://scripts/autoload/grapple_point.gd" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/skill_inventory.tscn" id="7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(800, 32)
@@ -51,7 +52,7 @@ shape = SubResource("RectangleShape2D_wall")
 
 [node name="GrapplePoint1" type="Area2D" parent="."]
 position = Vector2(300, 50)
-script = ExtResource("3")
+script = ExtResource("5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GrapplePoint1"]
 shape = SubResource("CircleShape2D_grapple")
@@ -66,8 +67,12 @@ color = Color(1, 1, 0, 1)
 [node name="Enemy1" parent="." instance=ExtResource("2")]
 position = Vector2(300, 268)
 
-[node name="TokenUI" parent="." instance=ExtResource("4")]
+[node name="Tracker1" parent="." instance=ExtResource("3")]
+position = Vector2(500, 268)
 
-[node name="SkillUI" parent="." instance=ExtResource("5")]
+[node name="Boss1" parent="." instance=ExtResource("4")]
+position = Vector2(700, 250)
 
-[node name="SkillInventory" parent="." instance=ExtResource("6")]
+[node name="HUD" parent="." instance=ExtResource("6")]
+
+[node name="SkillInventory" parent="." instance=ExtResource("7")]

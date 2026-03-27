@@ -55,7 +55,9 @@ func _update_display() -> void:
 		var name_label: Label = slot.get_node_or_null("NameLabel")
 
 		if name_label != null:
-			var skill_data = equipped[i] if i < equipped.size() else null
+			var skill_data = null
+			if i < equipped.size():
+				skill_data = equipped[i]
 
 			if skill_data != null and typeof(skill_data) == TYPE_DICTIONARY:
 				var skill_name: String = ""
