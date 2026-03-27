@@ -61,7 +61,7 @@ func _physics_process(delta: float) -> void:
 		State.CHASE:
 			_chase_state(delta)
 		State.ATTACK:
-			_pass  # 攻击状态在动画中处理
+			pass  # 攻击状态在动画中处理
 		State.HURT:
 			_hurt_state()
 
