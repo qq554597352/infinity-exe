@@ -74,13 +74,13 @@ func _physics_process(delta: float) -> void:
 		State.CHASE:
 			_chase_state(delta)
 		State.MELEE_ATTACK:
-			_pass  # 在动画中处理
+			pass  # 在动画中处理
 		State.RANGED_ATTACK:
 			_ranged_attack_state()
 		State.SUMMON:
-			_pass
+			pass
 		State.HURT:
-			_pass
+			pass
 		State.PHASE_CHANGE:
 			_phase_change_state()
 		State.DEAD:
