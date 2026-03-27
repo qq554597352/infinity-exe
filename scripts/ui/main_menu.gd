@@ -170,22 +170,18 @@ func _on_start_pressed() -> void:
 	# 延迟切换场景
 	await get_tree().create_timer(0.3).timeout
 
-	# 尝试加载场景
+	# 直接切换场景（最简单可靠的方式）
 	print("正在加载 main_level.tscn...")
-	var scene_path = "res://scenes/levels/main_level.tscn"
-	var scene = load(scene_path)
-	if scene:
-		print("场景加载成功，正在切换...")
-		get_tree().change_scene_to_file(scene_path)
-		print("场景切换完成")
-	else:
-		print("错误：场景加载失败！")
+	get_tree().change_scene_to_file("res://scenes/levels/main_level.tscn")
+	print("场景切换完成")
+
 	queue_free()
 
 func _on_debug_pressed() -> void:
 	print("加载调试关卡...")
 	current_state = MenuState.PLAYING
 	await get_tree().create_timer(0.3).timeout
+	print("正在加载 debug_level.tscn...")
 	get_tree().change_scene_to_file("res://scenes/levels/debug_level.tscn")
 	queue_free()
 
@@ -193,6 +189,7 @@ func _on_minimal_pressed() -> void:
 	print("加载最小测试...")
 	current_state = MenuState.PLAYING
 	await get_tree().create_timer(0.3).timeout
+	print("正在加载 minimal_test.tscn...")
 	get_tree().change_scene_to_file("res://scenes/levels/minimal_test.tscn")
 	queue_free()
 
