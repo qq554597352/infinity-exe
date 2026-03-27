@@ -210,6 +210,6 @@ func _death_effect() -> void:
 func _spawn_skill_fragment() -> void:
 	var fragment = load("res://scenes/items/skill_fragment.tscn").instantiate()
 	fragment.position = global_position
-	fragment.position.y -= 20
+	fragment.position.y += 10  # 在敌人脚下生成，方便拾取
 	get_parent().add_child(fragment)
 	print("Tracker 掉落技能碎片！")

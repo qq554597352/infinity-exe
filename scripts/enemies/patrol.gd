@@ -83,6 +83,6 @@ func _spawn_skill_fragment() -> void:
 	# 创建技能碎片
 	var fragment = load("res://scenes/items/skill_fragment.tscn").instantiate()
 	fragment.position = global_position
-	fragment.position.y -= 20  # 在敌人上方生成
+	fragment.position.y += 10  # 在敌人脚下生成，方便拾取
 	get_parent().add_child(fragment)
 	print("掉落技能碎片！")
