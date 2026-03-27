@@ -134,5 +134,5 @@ func get_stats() -> Dictionary:
 		"highest_loop": highest_loop,
 		"death_count": death_count,
 		"owned_skills": SkillManager.owned_skills.size(),
-		"equipped_skills": SkillManager.equipped_skills.count(null) == 4 ? 0 : 4 - SkillManager.equipped_skills.count(null)
+		"equipped_skills": 0 if SkillManager.equipped_skills.count(null) == 4 else 4 - SkillManager.equipped_skills.count(null)
 	}

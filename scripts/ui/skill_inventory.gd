@@ -130,7 +130,9 @@ func _update_display() -> void:
 		if slot != null:
 			var name_label: Label = slot.get_node_or_null("SkillName")
 			if name_label != null:
-				var skill_data = equipped[i] if i < equipped.size() else null
+				var skill_data = null
+			if i < equipped.size():
+				skill_data = equipped[i]
 				if skill_data != null and typeof(skill_data) == TYPE_DICTIONARY:
 					name_label.text = str(skill_data.get("name", "?")).substr(0, 8)
 					name_label.add_theme_color_override("font_color", _get_degradation_color(skill_data))
