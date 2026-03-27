@@ -79,13 +79,19 @@ func _physics_process(delta: float) -> void:
 		if is_on_floor():
 			velocity.y = jump_force
 			jump_count = 1
+			if AudioManager:
+				AudioManager.play_jump()
 		elif on_wall:
 			velocity.y = jump_force
 			velocity.x = wall_dir.x * speed * 1.5
 			jump_count = 1
+			if AudioManager:
+				AudioManager.play_jump()
 		elif jump_count < max_jumps:
 			velocity.y = jump_force
 			jump_count += 1
+			if AudioManager:
+				AudioManager.play_jump()
 
 	if Input.is_action_just_pressed("grapple"):
 		_try_start_grapple()
@@ -119,6 +125,10 @@ func take_damage(amount: int) -> void:
 
 func die() -> void:
 	print("玩家死亡！")
+
+	if AudioManager:
+		AudioManager.play_death()
+
 	GameManager.player_died()
 
 	# 记录位置用于复活
@@ -148,6 +158,11 @@ func _attack() -> void:
 	is_attacking = true
 	_show_attack_effect()
 	_attempt_damage()
+
+	# 播放攻击音效
+	if AudioManager:
+		AudioManager.play_attack()
+
 	await get_tree().create_timer(0.2).timeout
 	can_attack = true
 	is_attacking = false
@@ -209,6 +224,9 @@ func dash_strike() -> void:
 	is_dashing = true
 	invincible = true
 
+	if AudioManager:
+		AudioManager.play_skill()
+
 	var dash_dir := Vector2.RIGHT * facing_direction
 	velocity = dash_dir * 800
 	attack_damage = 2  # 冲锋时伤害翻倍
@@ -223,6 +241,9 @@ func _dash_update(delta: float) -> void:
 
 # 弹幕格挡
 func bullet_bloom() -> void:
+	if AudioManager:
+		AudioManager.play_skill()
+
 	# 创建格挡特效
 	var enemies = get_tree().get_nodes_in_group("enemies")
 	for enemy in enemies:
@@ -233,6 +254,9 @@ func bullet_bloom() -> void:
 
 # 紧急闪避
 func evasion_protocol() -> void:
+	if AudioManager:
+		AudioManager.play_skill()
+
 	invincible = true
 	var blink_dir := Vector2.RIGHT * facing_direction
 	global_position += blink_dir * 150
