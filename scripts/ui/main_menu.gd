@@ -156,6 +156,10 @@ func _on_start_pressed() -> void:
 	print("开始游戏...")
 	start_game.emit()
 	current_state = MenuState.PLAYING
+
+	# 延迟切换场景
+	await get_tree().create_timer(0.3).timeout
+	get_tree().change_scene_to_file("res://scenes/levels/main_level.tscn")
 	queue_free()
 
 func _on_settings_pressed() -> void:
