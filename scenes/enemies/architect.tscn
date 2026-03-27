@@ -1,0 +1,60 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/architect.gd" id="1_architect"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(64, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(60, 60)
+
+[node name="Architect" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_architect")
+max_health = 20
+damage = 2
+token_drop = 50
+speed = 80.0
+chase_speed = 150.0
+melee_range = 80.0
+ranged_attack_range = 400.0
+attack_cooldown = 1.5
+phase2_health_threshold = 0.5
+phase3_health_threshold = 0.2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -32.0
+offset_top = -40.0
+offset_right = 32.0
+offset_bottom = 40.0
+color = Color(0.8, 0.2, 0.8, 1)
+
+[node name="HealthBarBG" type="ColorRect" parent="."]
+offset_left = -80.0
+offset_top = -90.0
+offset_right = 80.0
+offset_bottom = -70.0
+color = Color(0.2, 0.2, 0.2, 0.8)
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -75.0
+offset_top = -88.0
+offset_right = 75.0
+offset_bottom = -72.0
+grow_horizontal = 2
+max_value = 20.0
+value = 20.0
+show_percentage = false
+show_bg = false
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_2")
