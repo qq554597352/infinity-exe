@@ -74,7 +74,7 @@ func _create_main_menu() -> void:
 	button_container.name = "ButtonContainer"
 	button_container.set_anchors_preset(Control.PRESET_CENTER)
 	button_container.position = Vector2(-80, 50)
-	button_container.size = Vector2(160, 220)
+	button_container.size = Vector2(160, 280)
 	button_container.add_theme_constant_override("separation", 20)
 	add_child(button_container)
 
@@ -87,6 +87,11 @@ func _create_main_menu() -> void:
 	var debug_button = _create_menu_button("DEBUG LEVEL")
 	debug_button.pressed.connect(_on_debug_pressed)
 	button_container.add_child(debug_button)
+
+	# 最小测试按钮
+	var minimal_button = _create_menu_button("MINIMAL TEST")
+	minimal_button.pressed.connect(_on_minimal_pressed)
+	button_container.add_child(minimal_button)
 
 	# 设置按钮
 	settings_button = _create_menu_button("SETTINGS")
@@ -182,6 +187,13 @@ func _on_debug_pressed() -> void:
 	current_state = MenuState.PLAYING
 	await get_tree().create_timer(0.3).timeout
 	get_tree().change_scene_to_file("res://scenes/levels/debug_level.tscn")
+	queue_free()
+
+func _on_minimal_pressed() -> void:
+	print("加载最小测试...")
+	current_state = MenuState.PLAYING
+	await get_tree().create_timer(0.3).timeout
+	get_tree().change_scene_to_file("res://scenes/levels/minimal_test.tscn")
 	queue_free()
 
 func _on_settings_pressed() -> void:
