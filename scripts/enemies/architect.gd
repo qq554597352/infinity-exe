@@ -214,12 +214,12 @@ func _on_body_entered(body: Node) -> void:
 """
 	projectile.set_script(proj_script)
 
-	# 设置方向（朝向玩家）
-	var to_player = player.global_position - global_position
-	projectile.direction = to_player.normalized()
-
 	# 添加碰撞检测
 	projectile.body_entered.connect(_on_projectile_hit.bind(projectile))
+
+	# 设置方向（朝向玩家）- 需要在脚本设置之后）
+	var to_player = player.global_position - global_position
+	projectile.set("direction", to_player.normalized())
 
 	get_parent().add_child(projectile)
 	print("ARCHITECT 发射投射物！")
