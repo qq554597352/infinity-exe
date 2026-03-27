@@ -45,6 +45,14 @@ func _ready() -> void:
 	attack_effect.visible = false
 	add_to_group("player")
 
+# ============ 音效辅助方法 ============
+
+func _play_sound(sound_name: String) -> void:
+	# 懒加载 AudioManager
+	var audio_manager = get_node_or_null("/root/AudioManager")
+	if audio_manager and audio_manager.has_method("play_sfx"):
+		audio_manager.play_sfx(sound_name)
+
 func _physics_process(delta: float) -> void:
 	if is_grappling:
 		_grapple_update(delta)
@@ -79,19 +87,16 @@ func _physics_process(delta: float) -> void:
 		if is_on_floor():
 			velocity.y = jump_force
 			jump_count = 1
-			if AudioManager:
-				AudioManager.play_jump()
+			_play_sound("jump")
 		elif on_wall:
 			velocity.y = jump_force
 			velocity.x = wall_dir.x * speed * 1.5
 			jump_count = 1
-			if AudioManager:
-				AudioManager.play_jump()
+			_play_sound("jump")
 		elif jump_count < max_jumps:
 			velocity.y = jump_force
 			jump_count += 1
-			if AudioManager:
-				AudioManager.play_jump()
+			_play_sound("jump")
 
 	if Input.is_action_just_pressed("grapple"):
 		_try_start_grapple()
@@ -126,8 +131,7 @@ func take_damage(amount: int) -> void:
 func die() -> void:
 	print("玩家死亡！")
 
-	if AudioManager:
-		AudioManager.play_death()
+	_play_sound("death")
 
 	GameManager.player_died()
 
@@ -160,8 +164,7 @@ func _attack() -> void:
 	_attempt_damage()
 
 	# 播放攻击音效
-	if AudioManager:
-		AudioManager.play_attack()
+	_play_sound("attack")
 
 	await get_tree().create_timer(0.2).timeout
 	can_attack = true
@@ -224,8 +227,7 @@ func dash_strike() -> void:
 	is_dashing = true
 	invincible = true
 
-	if AudioManager:
-		AudioManager.play_skill()
+	_play_sound("skill")
 
 	var dash_dir := Vector2.RIGHT * facing_direction
 	velocity = dash_dir * 800
@@ -241,8 +243,7 @@ func _dash_update(delta: float) -> void:
 
 # 弹幕格挡
 func bullet_bloom() -> void:
-	if AudioManager:
-		AudioManager.play_skill()
+	_play_sound("skill")
 
 	# 创建格挡特效
 	var enemies = get_tree().get_nodes_in_group("enemies")
@@ -254,8 +255,7 @@ func bullet_bloom() -> void:
 
 # 紧急闪避
 func evasion_protocol() -> void:
-	if AudioManager:
-		AudioManager.play_skill()
+	_play_sound("skill")
 
 	invincible = true
 	var blink_dir := Vector2.RIGHT * facing_direction
