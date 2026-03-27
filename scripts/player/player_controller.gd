@@ -44,6 +44,7 @@ func _ready() -> void:
 	current_health = max_health
 	attack_effect.visible = false
 	add_to_group("player")
+	print("Player 加载完成! 位置: ", global_position)
 
 # ============ 音效辅助方法 ============
 
